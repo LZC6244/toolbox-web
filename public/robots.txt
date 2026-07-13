@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://toolbox-web-eta.vercel.app/sitemap.xml
