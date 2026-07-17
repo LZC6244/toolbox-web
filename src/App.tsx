@@ -38,7 +38,7 @@ function KeepAlive({ path, children }: { path: string; children: ReactNode }) {
     ? location.pathname === '/'
     : location.pathname === path || location.pathname.startsWith(path + '/')
   return (
-    <div className={active ? '' : 'hidden'}>
+    <div className={active ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
       {children}
     </div>
   )
@@ -162,7 +162,7 @@ function App() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex flex-1 flex-col overflow-y-auto">
         {/* Top bar (mobile) */}
         <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-gray-800 bg-gray-900/80 px-4 py-3 backdrop-blur lg:hidden">
           <button
@@ -178,7 +178,7 @@ function App() {
         </div>
 
         {/* Content - all pages stay mounted, toggled via CSS to preserve state */}
-        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-10">
+        <div className="flex min-h-0 flex-1 flex-col w-full px-4 py-4 lg:px-6 lg:py-6">
           <KeepAlive path="/"><Home /></KeepAlive>
           <KeepAlive path="/url"><UrlCoder /></KeepAlive>
           <KeepAlive path="/mermaid"><MermaidViewer /></KeepAlive>

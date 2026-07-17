@@ -83,7 +83,7 @@ function UrlCoder() {
   const encodedPlaceholder = `输入编码文本，${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ToolHeader title="URL 编解码" description="URL/URI 编码与解码" icon="🔗" />
 
       {/* 模式切换 */}
@@ -136,9 +136,9 @@ function UrlCoder() {
         </button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         {/* 左侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">{swapped ? encodedLabel : rawLabel}</label>
             <CopyButton text={swapped ? encodedText : rawText} />
@@ -148,12 +148,12 @@ function UrlCoder() {
             value={swapped ? encodedText : rawText}
             onChange={swapped ? handleEncodedChange : handleRawChange}
             placeholder={swapped ? encodedPlaceholder : rawPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
 
         {/* 右侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">{swapped ? rawLabel : encodedLabel}</label>
             <CopyButton text={swapped ? rawText : encodedText} />
@@ -163,7 +163,7 @@ function UrlCoder() {
             value={swapped ? rawText : encodedText}
             onChange={swapped ? handleRawChange : handleEncodedChange}
             placeholder={swapped ? rawPlaceholder : encodedPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
       </div>

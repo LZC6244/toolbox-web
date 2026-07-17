@@ -59,7 +59,7 @@ function Base64Coder() {
   const encodedPlaceholder = `输入 Base64 字符串，${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ToolHeader title="Base64 编解码" description="文本 Base64 编码与解码，支持 UTF-8" icon="🔤" />
 
       <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -77,9 +77,9 @@ function Base64Coder() {
         </button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         {/* 左侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">{swapped ? encodedLabel : rawLabel}</label>
             <CopyButton text={swapped ? base64Text : plainText} />
@@ -88,12 +88,12 @@ function Base64Coder() {
             value={swapped ? base64Text : plainText}
             onChange={swapped ? handleBase64Change : handlePlainChange}
             placeholder={swapped ? encodedPlaceholder : rawPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
 
         {/* 右侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">{swapped ? rawLabel : encodedLabel}</label>
             <CopyButton text={swapped ? plainText : base64Text} />
@@ -102,7 +102,7 @@ function Base64Coder() {
             value={swapped ? plainText : base64Text}
             onChange={swapped ? handlePlainChange : handleBase64Change}
             placeholder={swapped ? rawPlaceholder : encodedPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
       </div>

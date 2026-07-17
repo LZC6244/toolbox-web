@@ -46,23 +46,27 @@ function MermaidViewer() {
   // 全屏状态
   const [isFullscreen, setIsFullscreen] = useState(false)
 
-  const render = async () => {
+  // 防抖渲染：避免每次按键都立即触发 mermaid.render
+  const renderTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const render = useCallback(async () => {
     if (!code.trim()) {
       setSvg('')
       setError('')
       return
     }
-    setError('')
+    // 不提前清空 error/svg，避免闪烁；渲染成功或失败后再更新
     try {
       const id = `mermaid-${Date.now()}`
       const result = await mermaid.render(id, code)
       setSvg(result.svg)
+      setError('')
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       setError(msg)
-      setSvg('')
+      // 保留上一次有效的 SVG，不清空，避免预览区闪烁
     }
-  }
+  }, [code])
 
   useEffect(() => {
     mermaid.initialize({
@@ -86,7 +90,14 @@ function MermaidViewer() {
             tertiaryColor: '#1f2937',
           },
     })
-    render()
+    // 防抖：停止输入 300ms 后再渲染
+    if (renderTimer.current) clearTimeout(renderTimer.current)
+    renderTimer.current = setTimeout(() => {
+      render()
+    }, 300)
+    return () => {
+      if (renderTimer.current) clearTimeout(renderTimer.current)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, currentTheme])
 
@@ -264,11 +275,11 @@ function MermaidViewer() {
   )
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ToolHeader title="Mermaid 可视化" description="实时渲染 Mermaid 图表" icon="📊" />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">Mermaid 代码</label>
             <button
@@ -279,7 +290,7 @@ function MermaidViewer() {
             </button>
           </div>
           <textarea
-            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-sm text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-sm text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             rows={20}
@@ -290,7 +301,7 @@ function MermaidViewer() {
           </p>
         </Card>
 
-        <Card>
+        <Card className="h-full">
           {/* 预览头部：标签 + 工具栏 */}
           <div className="mb-2 flex items-center justify-between gap-2">
             <label className="text-sm font-medium text-gray-300">
@@ -329,7 +340,7 @@ function MermaidViewer() {
           {/* 画布容器 */}
           <div
             ref={containerRef}
-            className="mermaid-container relative flex min-h-[400px] cursor-grab items-center justify-center overflow-hidden rounded-lg border border-gray-800 bg-gray-950 active:cursor-grabbing"
+            className="mermaid-container relative flex min-h-0 flex-1 cursor-grab items-center justify-center overflow-hidden rounded-lg border border-gray-800 bg-gray-950 active:cursor-grabbing"
             {...canvasHandlers}
           >
             {canvasContent}

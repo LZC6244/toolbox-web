@@ -8,13 +8,13 @@ interface ToolHeaderProps {
 
 export function ToolHeader({ title, description, icon }: ToolHeaderProps) {
   return (
-    <div className="mb-6 flex items-center gap-3">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-800 text-2xl">
+    <div className="mb-4 flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-800 text-xl">
         {icon}
       </div>
       <div>
-        <h2 className="text-2xl font-bold text-gray-100">{title}</h2>
-        <p className="text-sm text-gray-400">{description}</p>
+        <h2 className="text-xl font-bold text-gray-100">{title}</h2>
+        <p className="text-xs text-gray-400">{description}</p>
       </div>
     </div>
   )
@@ -27,7 +27,7 @@ interface CardProps {
 
 export function Card({ children, className = '' }: CardProps) {
   return (
-    <div className={`rounded-xl border border-gray-800 bg-gray-900/50 p-5 ${className}`}>
+    <div className={`flex min-h-0 flex-col rounded-xl border border-gray-800 bg-gray-900/50 p-4 ${className}`}>
       {children}
     </div>
   )
@@ -46,11 +46,11 @@ interface TextAreaProps {
 
 export function TextArea({ value, onChange, placeholder, rows = 6, label, id, className = '', onMouseUp }: TextAreaProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
       {label && <label className="text-sm font-medium text-gray-300">{label}</label>}
       <textarea
         id={id}
-        className={`w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-gray-100 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 resize-y ${className}`}
+        className={`flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-gray-100 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 ${className}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

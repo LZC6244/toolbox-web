@@ -150,7 +150,7 @@ function AsciiCoder() {
     : `输入十进制码（空格分隔），${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ToolHeader title="ASCII/Unicode 互转" description="ASCII 码与 Unicode 编码互转，支持中文" icon="🔣" />
 
       {/* 模式切换 */}
@@ -203,9 +203,9 @@ function AsciiCoder() {
         </button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         {/* 左侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">{swapped ? encodedLabel : rawLabel}</label>
             <CopyButton text={swapped ? encodedText : rawText} />
@@ -215,12 +215,12 @@ function AsciiCoder() {
             value={swapped ? encodedText : rawText}
             onChange={swapped ? handleEncodedChange : handleRawChange}
             placeholder={swapped ? encodedPlaceholder : rawPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
 
         {/* 右侧 */}
-        <Card>
+        <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">
               {swapped ? rawLabel : encodedLabel}
@@ -232,7 +232,7 @@ function AsciiCoder() {
             value={swapped ? rawText : encodedText}
             onChange={swapped ? handleRawChange : handleEncodedChange}
             placeholder={swapped ? rawPlaceholder : encodedPlaceholder}
-            rows={10}
+            rows={12}
           />
         </Card>
       </div>

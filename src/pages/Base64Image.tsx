@@ -100,10 +100,10 @@ function Base64Image() {
   }
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ToolHeader title="Base64 转图片" description="Base64 与图片互转、预览、下载" icon="🖼️" />
 
-      <div className="space-y-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
         {/* Upload area */}
         <Card>
           <div
@@ -130,9 +130,9 @@ function Base64Image() {
           </div>
         </Card>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
           {/* Base64 input */}
-          <Card>
+          <Card className="h-full">
             <div className="mb-2 flex items-center justify-between">
               <label className="text-sm font-medium text-gray-300">Base64 字符串</label>
               <div className="flex gap-2">
@@ -146,7 +146,7 @@ function Base64Image() {
               </div>
             </div>
             <textarea
-              className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-xs text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-xs text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               value={base64}
               onChange={(e) => setBase64(e.target.value)}
               placeholder="粘贴 Base64 字符串（带或不带 data:image 前缀）..."
@@ -161,7 +161,7 @@ function Base64Image() {
           </Card>
 
           {/* Image preview */}
-          <Card>
+          <Card className="h-full">
             <div className="mb-2 flex items-center justify-between">
               <label className="text-sm font-medium text-gray-300">图片预览</label>
               {imageUrl && (
@@ -175,7 +175,7 @@ function Base64Image() {
             </div>
             {error && <ErrorBanner message={error} />}
             {imageUrl ? (
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-1 flex-col items-center justify-center gap-3">
                 <img
                   src={imageUrl}
                   alt="预览"
