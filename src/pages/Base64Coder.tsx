@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ToolHeader, Card, TextArea, CopyButton, ErrorBanner } from '../components/ui'
+import { Base64Icon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 function Base64Coder() {
@@ -59,19 +60,19 @@ function Base64Coder() {
   const encodedPlaceholder = `输入 Base64 字符串，${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ToolHeader title="Base64 编解码" description="文本 Base64 编码与解码，支持 UTF-8" icon="🔤" />
+    <div className="tool-base64 flex min-h-0 flex-1 flex-col">
+      <ToolHeader title="Base64 编解码" description="文本 Base64 编码与解码，支持 UTF-8" icon={Base64Icon} />
 
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <button
           onClick={swap}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           交换 ↔
         </button>
         <button
           onClick={clearAll}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           清空
         </button>

@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo, useEffect, type ChangeEvent, type DragEvent } from 'react'
 import { ToolHeader, Card, Button, ErrorBanner, CopyButton } from '../components/ui'
+import { ImageIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 function Base64Image() {
@@ -100,21 +101,23 @@ function Base64Image() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ToolHeader title="Base64 转图片" description="Base64 与图片互转、预览、下载" icon="🖼️" />
+    <div className="tool-image flex min-h-0 flex-1 flex-col">
+      <ToolHeader title="Base64 转图片" description="Base64 与图片互转、预览、下载" icon={ImageIcon} />
 
       <div className="flex min-h-0 flex-1 flex-col gap-4">
         {/* Upload area */}
         <Card>
           <div
-            className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
-              dragOver ? 'border-brand-500 bg-brand-950/20' : 'border-gray-700'
+            className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-all duration-300 ${
+              dragOver ? 'border-tool-500 bg-tool-600/10 scale-[1.01]' : 'border-gray-700 hover:border-gray-600'
             }`}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
           >
-            <div className="mb-3 text-4xl">📁</div>
+            <div className={`mb-3 text-tool-400 transition-transform duration-300 ${dragOver ? 'scale-110' : ''}`}>
+              <ImageIcon className="h-10 w-10" strokeWidth={1.5} />
+            </div>
             <p className="mb-2 text-sm text-gray-300">拖拽图片到此处，或</p>
             <Button onClick={() => fileInputRef.current?.click()} variant="secondary">
               选择图片文件
@@ -146,7 +149,7 @@ function Base64Image() {
               </div>
             </div>
             <textarea
-              className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-xs text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-xs text-gray-100 placeholder-gray-500 transition-colors duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
               value={base64}
               onChange={(e) => setBase64(e.target.value)}
               placeholder="粘贴 Base64 字符串（带或不带 data:image 前缀）..."
@@ -167,7 +170,7 @@ function Base64Image() {
               {imageUrl && (
                 <button
                   onClick={() => setIsFullscreen(true)}
-                  className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+                  className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
                 >
                   全屏放大
                 </button>
@@ -179,7 +182,7 @@ function Base64Image() {
                 <img
                   src={imageUrl}
                   alt="预览"
-                  className="max-w-full cursor-zoom-in rounded-lg border border-gray-800 transition-transform hover:opacity-90"
+                  className="max-w-full cursor-zoom-in rounded-lg border border-gray-800 shadow-sm transition-all duration-200 hover:opacity-90 hover:shadow-md"
                   onClick={() => setIsFullscreen(true)}
                 />
                 <p className="text-xs text-gray-400">
@@ -206,14 +209,17 @@ function Base64Image() {
       {isFullscreen && imageUrl && (
         <div
           ref={fullscreenRef}
-          className="fixed inset-0 z-50 flex flex-col bg-black/90"
+          className="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-sm animate-fade-in"
           onClick={() => setIsFullscreen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="图片全屏预览"
         >
           <div className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
             <span className="text-sm font-medium text-gray-300">图片全屏预览</span>
             <button
               onClick={() => setIsFullscreen(false)}
-              className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+              className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
             >
               退出全屏 (Esc)
             </button>

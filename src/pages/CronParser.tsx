@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { CronExpressionParser } from 'cron-parser'
 import { ToolHeader, Card, TextInput, ErrorBanner } from '../components/ui'
+import { CronIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 const CRON_PRESETS = [
@@ -105,8 +106,8 @@ function CronParser() {
   }, [expr])
 
   return (
-    <div>
-      <ToolHeader title="Cron 表达式" description="校验 Cron 表达式并计算下 5 次执行时间" icon="⏰" />
+    <div className="tool-cron">
+      <ToolHeader title="Cron 表达式" description="校验 Cron 表达式并计算下 5 次执行时间" icon={CronIcon} />
 
       <div className="space-y-4">
         <Card>
@@ -120,7 +121,7 @@ function CronParser() {
             {CRON_PRESETS.map((preset) => (
               <button
                 key={preset.value}
-                className="rounded-full border border-gray-700 bg-gray-800 px-3 py-1 text-xs text-gray-300 hover:border-brand-600 hover:text-brand-400"
+                className="rounded-full border border-gray-700 bg-gray-800 px-3 py-1 text-xs text-gray-300 transition-all duration-200 hover:border-tool-500 hover:text-tool-400 hover:shadow-sm active:scale-95"
                 onClick={() => setExpr(preset.value)}
               >
                 {preset.label}
@@ -145,9 +146,9 @@ function CronParser() {
               {nextRuns.map((d, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 rounded-lg border border-gray-800 bg-gray-950 px-4 py-2.5"
+                  className="flex items-center gap-3 rounded-lg border border-gray-800 bg-gray-950 px-4 py-2.5 transition-all duration-200 hover:border-gray-700 hover:shadow-sm"
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-tool-500 to-tool-600 text-xs font-bold text-white shadow-md shadow-tool-600/30">
                     {i + 1}
                   </span>
                   <span className="text-sm text-gray-100">{formatDate(d)}</span>
@@ -198,7 +199,7 @@ function CronParser() {
             </table>
           </div>
           <div className="mt-3 space-y-1 text-xs text-gray-400">
-            <p><code className="text-brand-400">*</code> 任意值 &nbsp; <code className="text-brand-400">/</code> 步进值 &nbsp; <code className="text-brand-400">-</code> 范围 &nbsp; <code className="text-brand-400">,</code> 列表 &nbsp; <code className="text-brand-400">L</code> 最后 &nbsp; <code className="text-brand-400">?</code> 不指定</p>
+            <p><code className="text-tool-400">*</code> 任意值 &nbsp; <code className="text-tool-400">/</code> 步进值 &nbsp; <code className="text-tool-400">-</code> 范围 &nbsp; <code className="text-tool-400">,</code> 列表 &nbsp; <code className="text-tool-400">L</code> 最后 &nbsp; <code className="text-tool-400">?</code> 不指定</p>
           </div>
         </Card>
       </div>

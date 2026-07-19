@@ -1,19 +1,22 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState, type ComponentType, type SVGProps } from 'react'
+import { CheckIcon, AlertIcon } from './icons'
 
 interface ToolHeaderProps {
   title: string
   description: string
-  icon: string
+  icon: ComponentType<SVGProps<SVGSVGElement>>
 }
 
-export function ToolHeader({ title, description, icon }: ToolHeaderProps) {
+export function ToolHeader({ title, description, icon: Icon }: ToolHeaderProps) {
   return (
-    <div className="mb-4 flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-800 text-xl">
-        {icon}
+    <div className="mb-4 flex items-center gap-3 animate-fade-in">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-tool-500 to-tool-600 text-white shadow-lg shadow-tool-600/30 transition-transform duration-300 hover:scale-105 hover:rotate-3">
+        <Icon className="h-5 w-5" />
       </div>
       <div>
-        <h2 className="text-xl font-bold text-gray-100">{title}</h2>
+        <h2 className="bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-xl font-bold text-transparent">
+          {title}
+        </h2>
         <p className="text-xs text-gray-400">{description}</p>
       </div>
     </div>
@@ -27,7 +30,7 @@ interface CardProps {
 
 export function Card({ children, className = '' }: CardProps) {
   return (
-    <div className={`flex min-h-0 flex-col rounded-xl border border-gray-800 bg-gray-900/50 p-4 ${className}`}>
+    <div className={`glass flex min-h-0 flex-col rounded-2xl p-4 shadow-xl shadow-black/10 transition-all duration-300 hover:shadow-2xl ${className}`}>
       {children}
     </div>
   )
@@ -50,7 +53,7 @@ export function TextArea({ value, onChange, placeholder, rows = 6, label, id, cl
       {label && <label className="text-sm font-medium text-gray-300">{label}</label>}
       <textarea
         id={id}
-        className={`flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-gray-100 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 ${className}`}
+        className={`flex-1 w-full resize-y rounded-xl border border-gray-700 bg-gray-900/70 px-4 py-3 text-sm text-gray-100 placeholder-gray-500 transition-all duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30 ${className}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -75,7 +78,7 @@ export function TextInput({ value, onChange, placeholder, label, type = 'text' }
       {label && <label className="text-sm font-medium text-gray-300">{label}</label>}
       <input
         type={type}
-        className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-gray-100 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+        className="w-full rounded-xl border border-gray-700 bg-gray-900/70 px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 transition-all duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -94,13 +97,13 @@ interface ButtonProps {
 
 export function Button({ children, onClick, variant = 'primary', className = '', title }: ButtonProps) {
   const styles = {
-    primary: 'bg-brand-600 hover:bg-brand-700 text-white',
-    secondary: 'bg-gray-700 hover:bg-gray-600 text-gray-100',
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
+    primary: 'bg-gradient-to-r from-tool-600 to-tool-500 text-white shadow-md shadow-tool-600/30 hover:shadow-lg hover:shadow-tool-600/40 hover:brightness-110',
+    secondary: 'bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-gray-100 shadow-sm hover:shadow',
+    danger: 'bg-red-600 hover:bg-red-700 active:bg-red-800 text-white shadow-sm hover:shadow',
   }
   return (
     <button
-      className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${styles[variant]} ${className}`}
+      className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.97] ${styles[variant]} ${className}`}
       onClick={onClick}
       title={title}
     >
@@ -114,6 +117,8 @@ interface CopyButtonProps {
 }
 
 export function CopyButton({ text }: CopyButtonProps) {
+  const [copied, setCopied] = useState(false)
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text)
@@ -126,14 +131,20 @@ export function CopyButton({ text }: CopyButtonProps) {
       document.execCommand('copy')
       document.body.removeChild(ta)
     }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
   }
   return (
     <button
-      className="rounded-lg bg-gray-700 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-600"
+      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed ${
+        copied
+          ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/40 scale-105'
+          : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-gray-100 border border-gray-600'
+      }`}
       onClick={handleCopy}
       disabled={!text}
     >
-      复制
+      {copied ? <><CheckIcon className="mr-1 inline h-3.5 w-3.5" />已复制</> : '复制'}
     </button>
   )
 }
@@ -141,8 +152,9 @@ export function CopyButton({ text }: CopyButtonProps) {
 export function ErrorBanner({ message }: { message: string }) {
   if (!message) return null
   return (
-    <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-3 text-sm text-red-300">
-      {message}
+    <div className="flex items-start gap-2.5 rounded-xl border border-red-300/60 bg-gradient-to-r from-red-50 to-red-100/50 px-4 py-3 text-sm text-red-700 shadow-md shadow-red-200/30 animate-fade-in">
+      <span className="mt-0.5 shrink-0 text-red-500" aria-hidden="true"><AlertIcon className="h-4 w-4" /></span>
+      <span>{message}</span>
     </div>
   )
 }

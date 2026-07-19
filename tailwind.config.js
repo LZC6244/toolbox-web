@@ -31,6 +31,11 @@ export default {
           100: 'rgb(var(--brand-100) / <alpha-value>)',
           50: 'rgb(var(--brand-50) / <alpha-value>)',
         },
+        tool: {
+          400: 'rgb(var(--tool-400) / <alpha-value>)',
+          500: 'rgb(var(--tool-500) / <alpha-value>)',
+          600: 'rgb(var(--tool-600) / <alpha-value>)',
+        },
       },
     },
   },

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { ToolHeader, Card, CopyButton } from '../components/ui'
+import { ClockIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 function pad(n: number): string {
@@ -49,14 +50,14 @@ function TimestampConverter() {
   }
 
   return (
-    <div>
-      <ToolHeader title="时间戳转换" description="Unix 时间戳与日期时间互转" icon="🕐" />
+    <div className="tool-time">
+      <ToolHeader title="时间戳转换" description="Unix 时间戳与日期时间互转" icon={ClockIcon} />
 
       <div className="space-y-4">
         {/* Live clock */}
         <Card className="text-center">
           <p className="text-sm text-gray-400">当前时间戳</p>
-          <p className="mt-1 font-mono text-3xl font-bold text-brand-400">{now}</p>
+          <p className="mt-1 font-mono text-3xl font-bold text-tool-400 animate-pulse-subtle">{now}</p>
           <p className="mt-1 text-sm text-gray-400">{formatDate(new Date())}</p>
         </Card>
 
@@ -68,15 +69,16 @@ function TimestampConverter() {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-gray-100 placeholder-gray-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 transition-colors duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
                   value={timestamp}
                   onChange={(e) => setTimestamp(e.target.value)}
                   placeholder="输入时间戳..."
                 />
                 <select
-                  className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-gray-100"
+                  className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-gray-100 transition-colors duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
                   value={unit}
                   onChange={(e) => setUnit(e.target.value as 's' | 'ms')}
+                  aria-label="时间戳单位"
                 >
                   <option value="s">秒</option>
                   <option value="ms">毫秒</option>
@@ -84,7 +86,7 @@ function TimestampConverter() {
               </div>
               <button
                 onClick={useNow}
-                className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+                className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
               >
                 使用当前时间戳
               </button>
@@ -106,9 +108,10 @@ function TimestampConverter() {
               <input
                 type="datetime-local"
                 step="1"
-                className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-gray-100 transition-colors duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
                 value={dateInput}
                 onChange={(e) => setDateInput(e.target.value)}
+                aria-label="选择日期时间"
               />
               {tsResult && (
                 <div className="flex items-center gap-2">

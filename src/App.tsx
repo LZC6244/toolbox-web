@@ -1,6 +1,6 @@
 import { NavLink, Link, useLocation } from 'react-router-dom'
-import { useState, useEffect, type ReactNode } from 'react'
-import { THEMES, useTheme } from './contexts/ThemeContext'
+import { useState, useEffect, type ReactNode, type ComponentType, type SVGProps } from 'react'
+import { UrlIcon, MermaidIcon, ImageIcon, Base64Icon, ClockIcon, CronIcon, AsciiIcon, MenuIcon } from './components/icons'
 
 import UrlCoder from './pages/UrlCoder'
 import MermaidViewer from './pages/MermaidViewer'
@@ -14,18 +14,18 @@ import Home from './pages/Home'
 interface NavItem {
   path: string
   label: string
-  icon: string
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   description: string
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/url', label: 'URL 编解码', icon: '🔗', description: 'URL 编码与解码' },
-  { path: '/mermaid', label: 'Mermaid 可视化', icon: '📊', description: '流程图实时渲染' },
-  { path: '/base64-image', label: 'Base64 转图片', icon: '🖼️', description: 'Base64 与图片互转' },
-  { path: '/base64', label: 'Base64 编解码', icon: '🔤', description: '文本 Base64 编解码' },
-  { path: '/timestamp', label: '时间戳转换', icon: '🕐', description: 'Unix 时间戳转换' },
-  { path: '/cron', label: 'Cron 表达式', icon: '⏰', description: '校验并计算执行时间' },
-  { path: '/ascii', label: 'ASCII/Unicode', icon: '🔣', description: 'ASCII 与 Unicode 互转' },
+  { path: '/url', label: 'URL 编解码', icon: UrlIcon, description: 'URL 编码与解码' },
+  { path: '/mermaid', label: 'Mermaid 可视化', icon: MermaidIcon, description: '流程图实时渲染' },
+  { path: '/base64-image', label: 'Base64 转图片', icon: ImageIcon, description: 'Base64 与图片互转' },
+  { path: '/base64', label: 'Base64 编解码', icon: Base64Icon, description: '文本 Base64 编解码' },
+  { path: '/timestamp', label: '时间戳转换', icon: ClockIcon, description: 'Unix 时间戳转换' },
+  { path: '/cron', label: 'Cron 表达式', icon: CronIcon, description: '校验并计算执行时间' },
+  { path: '/ascii', label: 'ASCII/Unicode', icon: AsciiIcon, description: 'ASCII 与 Unicode 互转' },
 ]
 
 /**
@@ -46,8 +46,12 @@ function KeepAlive({ path, children }: { path: string; children: ReactNode }) {
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarHover, setSidebarHover] = useState(false)
   const location = useLocation()
-  const { themeId, setThemeId } = useTheme()
+
+  const isHome = location.pathname === '/'
+  // 工具页默认收起为图标栏，悬停时临时展开；首页始终展开
+  const collapsed = !isHome && !sidebarHover
 
   // 检测是否已登录（_tb_auth_on cookie 由边缘函数在登录成功时设置）
   const [authEnabled, setAuthEnabled] = useState(false)
@@ -63,58 +67,83 @@ function App() {
 
   return (
     <div className="flex h-screen overflow-hidden">
+      {/* Ambient gradient background */}
+      <div className="ambient-bg" aria-hidden="true" />
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 h-full w-72 transform transition-transform duration-300 lg:static lg:translate-x-0 ${
+        className={`fixed z-40 h-full transform transition-all duration-300 ease-in-out lg:static lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } ${collapsed ? 'lg:w-16' : 'lg:w-72'} w-72`}
+        onMouseEnter={() => setSidebarHover(true)}
+        onMouseLeave={() => setSidebarHover(false)}
       >
-        <div className="flex h-full flex-col bg-gray-900 border-r border-gray-800">
+        <div className="glass flex h-full flex-col border-r border-gray-700/60 shadow-2xl shadow-gray-400/20">
           {/* Logo - 点击跳转首页 */}
           <Link
             to="/"
             onClick={() => setSidebarOpen(false)}
-            className="flex items-center gap-3 px-6 py-5 border-b border-gray-800 transition-colors hover:bg-gray-800/50"
+            className={`flex items-center gap-3 border-b border-gray-700/60 transition-colors hover:bg-gray-800/50 ${
+              collapsed ? 'justify-center px-2 py-5' : 'px-6 py-5'
+            }`}
+            title="Toolbox 首页"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-600 text-xl font-bold text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xl font-bold text-white shadow-lg shadow-brand-600/30 transition-transform duration-300 hover:scale-105 hover:rotate-3">
               T
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-100">Toolbox</h1>
-              <p className="text-xs text-gray-400">在线工具集合</p>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0">
+                <h1 className="truncate text-lg font-bold text-gray-100">Toolbox</h1>
+                <p className="text-xs text-gray-400">在线工具集合</p>
+              </div>
+            )}
           </Link>
 
           {/* Nav */}
-          <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          <nav className={`flex-1 space-y-1 py-4 ${collapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-3'}`}>
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                  `group relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ${
+                    collapsed ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
+                  } ${
                     isActive
-                      ? 'bg-brand-600 text-white'
-                      : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                      ? 'bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-lg shadow-brand-600/30'
+                      : 'text-gray-400 hover:bg-gray-800/60 hover:text-gray-200'
                   }`
                 }
                 onClick={() => setSidebarOpen(false)}
               >
                 {({ isActive }) => (
                   <>
-                    <span className="text-base">{item.icon}</span>
-                    <div className="flex flex-col">
-                      <span>{item.label}</span>
-                      <span className={`text-xs ${isActive ? 'text-white/70' : 'text-gray-400'}`}>{item.description}</span>
-                    </div>
+                    <span className={`shrink-0 transition-transform duration-200 ${isActive ? '' : 'group-hover:scale-110'}`}>
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    {!collapsed && (
+                      <div className="flex min-w-0 flex-col">
+                        <span className="truncate">{item.label}</span>
+                        <span className={`truncate text-xs transition-colors ${isActive ? 'text-white/70' : 'text-gray-500 group-hover:text-gray-400'}`}>
+                          {item.description}
+                        </span>
+                      </div>
+                    )}
+                    {/* Collapsed tooltip */}
+                    {collapsed && (
+                      <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg border border-gray-700 bg-white px-2.5 py-1.5 text-xs text-gray-100 opacity-0 shadow-xl shadow-gray-400/30 transition-opacity duration-200 group-hover:opacity-100 lg:block">
+                        {item.label}
+                      </span>
+                    )}
                   </>
                 )}
               </NavLink>
@@ -122,36 +151,12 @@ function App() {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-800">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="text-xs text-gray-400">主题</span>
-              <div className="flex gap-1.5">
-                {THEMES.map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setThemeId(t.id)}
-                    className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-transform hover:scale-125 ${
-                      themeId === t.id ? 'scale-110 border-gray-100' : 'border-transparent'
-                    }`}
-                    style={{
-                      backgroundColor: t.isLight ? '#f1f5f9' : '#1e293b',
-                    }}
-                    title={t.name}
-                    aria-label={t.name}
-                  >
-                    <span
-                      className="block h-3 w-3 rounded-full"
-                      style={{ backgroundColor: t.swatch }}
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-            {authEnabled && (
+          <div className={`border-t border-gray-700/60 ${collapsed ? 'px-2 py-4' : 'px-6 py-4'}`}>
+            {authEnabled && !collapsed && (
               <div className="flex justify-end">
                 <a
                   href="/api/auth/logout"
-                  className="text-xs text-gray-400 hover:text-gray-200"
+                  className="text-xs text-gray-400 transition-colors hover:text-gray-200"
                 >
                   登出
                 </a>
@@ -164,15 +169,13 @@ function App() {
       {/* Main content */}
       <main className="flex flex-1 flex-col overflow-y-auto">
         {/* Top bar (mobile) */}
-        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-gray-800 bg-gray-900/80 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="glass sticky top-0 z-20 flex items-center gap-3 border-b border-gray-700/60 px-4 py-3 lg:hidden">
           <button
-            className="rounded-lg p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-100"
+            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-gray-100 active:scale-95"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="菜单"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <MenuIcon className="h-5 w-5" />
           </button>
           <span className="font-semibold text-gray-100">{currentTool?.label || '工具集合'}</span>
         </div>

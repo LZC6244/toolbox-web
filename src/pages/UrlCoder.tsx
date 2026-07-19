@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ToolHeader, Card, TextArea, CopyButton, ErrorBanner } from '../components/ui'
+import { UrlIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 type Mode = 'component' | 'uri'
@@ -83,12 +84,12 @@ function UrlCoder() {
   const encodedPlaceholder = `输入编码文本，${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ToolHeader title="URL 编解码" description="URL/URI 编码与解码" icon="🔗" />
+    <div className="tool-url flex min-h-0 flex-1 flex-col">
+      <ToolHeader title="URL 编解码" description="URL/URI 编码与解码" icon={UrlIcon} />
 
       {/* 模式切换 */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <div className="flex rounded-lg border border-gray-700 overflow-hidden">
+        <div className="flex rounded-lg border border-gray-700 overflow-hidden" role="group" aria-label="编码模式">
           <button
             onClick={() => {
               const newMode: Mode = 'uri'
@@ -96,12 +97,13 @@ function UrlCoder() {
               // 重新编码
               if (rawText) handleRawChange(rawText, newMode)
             }}
-            className={`px-3 py-1.5 text-xs transition-colors ${
+            className={`px-3 py-1.5 text-xs transition-all duration-200 ${
               mode === 'uri'
-                ? 'bg-brand-600 text-white'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'bg-gradient-to-r from-tool-600 to-tool-500 text-white shadow-md shadow-tool-600/30'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
             }`}
             title="encodeURI / decodeURI"
+            aria-pressed={mode === 'uri'}
           >
             URI 编码
           </button>
@@ -112,25 +114,26 @@ function UrlCoder() {
               // 重新编码
               if (rawText) handleRawChange(rawText, newMode)
             }}
-            className={`px-3 py-1.5 text-xs transition-colors ${
+            className={`px-3 py-1.5 text-xs transition-all duration-200 ${
               mode === 'component'
-                ? 'bg-brand-600 text-white'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'bg-gradient-to-r from-tool-600 to-tool-500 text-white shadow-md shadow-tool-600/30'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
             }`}
             title="encodeURIComponent / decodeURIComponent"
+            aria-pressed={mode === 'component'}
           >
             整址编码
           </button>
         </div>
         <button
           onClick={swap}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           交换 ↔
         </button>
         <button
           onClick={clearAll}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           清空
         </button>

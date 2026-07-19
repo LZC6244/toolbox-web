@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import mermaid from 'mermaid'
 import { ToolHeader, Card, ErrorBanner } from '../components/ui'
-import { useTheme } from '../contexts/ThemeContext'
+import { MermaidIcon, ZoomInIcon, ZoomOutIcon, ResetIcon, FullscreenIcon, ExitFullscreenIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 const DEFAULT_MERMAID = `graph TD
@@ -14,20 +14,19 @@ const DEFAULT_MERMAID = `graph TD
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: 'dark',
+  theme: 'default',
   themeVariables: {
-    primaryColor: '#4f46e5',
-    primaryTextColor: '#fff',
+    primaryColor: '#e0e7ff',
+    primaryTextColor: '#1e293b',
     primaryBorderColor: '#6366f1',
-    lineColor: '#6b7280',
-    secondaryColor: '#374151',
-    tertiaryColor: '#1f2937',
+    lineColor: '#64748b',
+    secondaryColor: '#f1f5f9',
+    tertiaryColor: '#e2e8f0',
   },
 })
 
 function MermaidViewer() {
   useSEO('Mermaid 图表查看器 - Toolbox 在线工具', '在线 Mermaid 流程图、时序图、甘特图实时渲染预览工具')
-  const { currentTheme } = useTheme()
   const [code, setCode] = useState(DEFAULT_MERMAID)
   const [svg, setSvg] = useState('')
   const [error, setError] = useState('')
@@ -69,27 +68,6 @@ function MermaidViewer() {
   }, [code])
 
   useEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: currentTheme.isLight ? 'default' : 'dark',
-      themeVariables: currentTheme.isLight
-        ? {
-            primaryColor: '#e0e7ff',
-            primaryTextColor: '#1e293b',
-            primaryBorderColor: '#6366f1',
-            lineColor: '#64748b',
-            secondaryColor: '#f1f5f9',
-            tertiaryColor: '#e2e8f0',
-          }
-        : {
-            primaryColor: '#4f46e5',
-            primaryTextColor: '#fff',
-            primaryBorderColor: '#6366f1',
-            lineColor: '#6b7280',
-            secondaryColor: '#374151',
-            tertiaryColor: '#1f2937',
-          },
-    })
     // 防抖：停止输入 300ms 后再渲染
     if (renderTimer.current) clearTimeout(renderTimer.current)
     renderTimer.current = setTimeout(() => {
@@ -99,7 +77,7 @@ function MermaidViewer() {
       if (renderTimer.current) clearTimeout(renderTimer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code, currentTheme])
+  }, [code])
 
   // SVG 重新渲染时重置视角
   useEffect(() => {
@@ -241,56 +219,50 @@ function MermaidViewer() {
 
   // 缩放按钮组
   const zoomControls = (
-    <div className="flex items-center gap-1 rounded-lg bg-gray-800 px-1 py-0.5">
+    <div className="flex items-center gap-1 rounded-lg bg-gray-800/80 px-1 py-0.5 shadow-sm border border-gray-700/50">
       <button
-        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 hover:bg-gray-700 hover:text-gray-100 disabled:opacity-30"
+        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 transition-all hover:bg-gray-700 hover:text-gray-100 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
         onClick={zoomOut}
         title="缩小"
         disabled={scale <= 0.2}
       >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" d="M5 12h14" />
-        </svg>
+        <ZoomOutIcon className="h-4 w-4" />
       </button>
       <button
-        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 transition-all hover:bg-gray-700 hover:text-gray-100 active:scale-90"
         onClick={resetView}
         title="重置视角"
       >
-        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h6v6M20 20h-6v-6M20 4L4 20" />
-        </svg>
+        <ResetIcon className="h-3.5 w-3.5" />
       </button>
       <button
-        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 hover:bg-gray-700 hover:text-gray-100 disabled:opacity-30"
+        className="flex h-7 w-7 items-center justify-center rounded text-gray-300 transition-all hover:bg-gray-700 hover:text-gray-100 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
         onClick={zoomIn}
         title="放大"
         disabled={scale >= 5}
       >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" d="M5 12h14M12 5v14" />
-        </svg>
+        <ZoomInIcon className="h-4 w-4" />
       </button>
     </div>
   )
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ToolHeader title="Mermaid 可视化" description="实时渲染 Mermaid 图表" icon="📊" />
+    <div className="tool-mermaid flex min-h-0 flex-1 flex-col">
+      <ToolHeader title="Mermaid 可视化" description="实时渲染 Mermaid 图表" icon={MermaidIcon} />
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         <Card className="h-full">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium text-gray-300">Mermaid 代码</label>
             <button
-              className="text-xs text-brand-400 hover:text-brand-300"
+              className="text-xs text-tool-400 hover:text-tool-500 transition-colors"
               onClick={() => setCode(DEFAULT_MERMAID)}
             >
               重置示例
             </button>
           </div>
           <textarea
-            className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-sm text-gray-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="min-h-0 flex-1 w-full resize-y rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-mono text-sm text-gray-100 placeholder-gray-500 transition-colors duration-200 focus:border-tool-500 focus:outline-none focus:ring-2 focus:ring-tool-500/30"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             rows={20}
@@ -314,19 +286,18 @@ function MermaidViewer() {
               {zoomControls}
               {/* 全屏按钮 */}
               <button
-                className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-800 text-gray-300 transition-all hover:bg-gray-700 hover:text-gray-100 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => setIsFullscreen(true)}
                 title="全屏预览"
                 disabled={!svg}
+                aria-label="全屏预览"
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
-                </svg>
+                <FullscreenIcon className="h-4 w-4" />
               </button>
               {/* 下载 */}
               {svg && (
                 <button
-                  className="text-xs text-brand-400 hover:text-brand-300"
+                  className="text-xs text-tool-400 hover:text-tool-500 transition-colors"
                   onClick={downloadSvg}
                 >
                   下载 SVG
@@ -340,7 +311,7 @@ function MermaidViewer() {
           {/* 画布容器 */}
           <div
             ref={containerRef}
-            className="mermaid-container relative flex min-h-0 flex-1 cursor-grab items-center justify-center overflow-hidden rounded-lg border border-gray-800 bg-gray-950 active:cursor-grabbing"
+            className="mermaid-container relative flex min-h-0 flex-1 cursor-grab items-center justify-center overflow-hidden rounded-lg border border-gray-800 bg-gray-950/80 active:cursor-grabbing"
             {...canvasHandlers}
           >
             {canvasContent}
@@ -355,7 +326,12 @@ function MermaidViewer() {
 
       {/* 全屏预览覆盖层 */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-gray-950/95 backdrop-blur-sm">
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-gray-950/95 backdrop-blur-md animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mermaid 图表全屏预览"
+        >
           {/* 顶部工具栏 */}
           <div className="flex items-center justify-between gap-2 border-b border-gray-800 px-4 py-3">
             <div className="flex items-center gap-3">
@@ -366,20 +342,19 @@ function MermaidViewer() {
               {zoomControls}
               {svg && (
                 <button
-                  className="text-xs text-brand-400 hover:text-brand-300"
+                  className="text-xs text-tool-400 hover:text-tool-500 transition-colors"
                   onClick={downloadSvg}
                 >
                   下载 SVG
                 </button>
               )}
               <button
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-300 transition-all hover:bg-gray-700 hover:text-gray-100 active:scale-95"
                 onClick={() => setIsFullscreen(false)}
                 title="退出全屏 (Esc)"
+                aria-label="退出全屏"
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <ExitFullscreenIcon className="h-5 w-5" />
               </button>
             </div>
           </div>

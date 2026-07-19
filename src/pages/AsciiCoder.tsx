@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ToolHeader, Card, TextArea, CopyButton, ErrorBanner } from '../components/ui'
+import { AsciiIcon } from '../components/icons'
 import { useSEO } from '../hooks/useSEO'
 
 type Mode = 'ascii' | 'unicode'
@@ -150,12 +151,12 @@ function AsciiCoder() {
     : `输入十进制码（空格分隔），${swapped ? '右侧' : '左侧'}自动解码...`
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ToolHeader title="ASCII/Unicode 互转" description="ASCII 码与 Unicode 编码互转，支持中文" icon="🔣" />
+    <div className="tool-ascii flex min-h-0 flex-1 flex-col">
+      <ToolHeader title="ASCII/Unicode 互转" description="ASCII 码与 Unicode 编码互转，支持中文" icon={AsciiIcon} />
 
       {/* 模式切换 */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <div className="flex rounded-lg border border-gray-700 overflow-hidden">
+        <div className="flex rounded-lg border border-gray-700 overflow-hidden" role="group" aria-label="编码模式">
           <button
             onClick={() => {
               const newMode: Mode = 'ascii'
@@ -163,12 +164,13 @@ function AsciiCoder() {
               // 重新编码
               if (rawText) handleRawChange(rawText, newMode)
             }}
-            className={`px-3 py-1.5 text-xs transition-colors ${
+            className={`px-3 py-1.5 text-xs transition-all duration-200 ${
               mode === 'ascii'
-                ? 'bg-brand-600 text-white'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'bg-gradient-to-r from-tool-600 to-tool-500 text-white shadow-md shadow-tool-600/30'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
             }`}
             title="charCodeAt / String.fromCharCode"
+            aria-pressed={mode === 'ascii'}
           >
             ASCII 编码
           </button>
@@ -179,25 +181,26 @@ function AsciiCoder() {
               // 重新编码
               if (rawText) handleRawChange(rawText, newMode)
             }}
-            className={`px-3 py-1.5 text-xs transition-colors ${
+            className={`px-3 py-1.5 text-xs transition-all duration-200 ${
               mode === 'unicode'
-                ? 'bg-brand-600 text-white'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'bg-gradient-to-r from-tool-600 to-tool-500 text-white shadow-md shadow-tool-600/30'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
             }`}
             title="codePointAt / String.fromCodePoint"
+            aria-pressed={mode === 'unicode'}
           >
             Unicode 编码
           </button>
         </div>
         <button
           onClick={swap}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           交换 ↔
         </button>
         <button
           onClick={clearAll}
-          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-colors hover:text-gray-200"
+          className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-400 transition-all duration-200 hover:text-gray-200 hover:border-gray-600 active:scale-95"
         >
           清空
         </button>
