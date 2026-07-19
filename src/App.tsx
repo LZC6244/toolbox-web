@@ -1,6 +1,6 @@
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useState, useEffect, type ReactNode, type ComponentType, type SVGProps } from 'react'
-import { UrlIcon, MermaidIcon, ImageIcon, Base64Icon, ClockIcon, CronIcon, AsciiIcon, MenuIcon } from './components/icons'
+import { UrlIcon, MermaidIcon, ImageIcon, Base64Icon, ClockIcon, CronIcon, AsciiIcon, MenuIcon, ToolboxIcon } from './components/icons'
 
 import UrlCoder from './pages/UrlCoder'
 import MermaidViewer from './pages/MermaidViewer'
@@ -97,8 +97,8 @@ function App() {
             }`}
             title="Toolbox 首页"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xl font-bold text-white shadow-lg shadow-brand-600/30 transition-transform duration-300 hover:scale-105 hover:rotate-3">
-              T
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg shadow-brand-600/30 transition-transform duration-300 hover:scale-105 hover:rotate-3">
+              <ToolboxIcon className="h-5 w-5" />
             </div>
             {!collapsed && (
               <div className="min-w-0">

@@ -13,14 +13,20 @@ dist-ssr/
 .env.local
 .env.*.local
 
-# Editor
+# Editor / IDE 生成文件
 .vscode/*
+# 保留以下 .vscode 文件（团队共享）
 !.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+# JetBrains IDE
 .idea/
+# Visual Studio
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+# Vim 交换文件
 *.sw?
 
 # OS

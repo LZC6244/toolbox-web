@@ -49,6 +49,16 @@ cp .env.example .env   # 复制示例配置
 
 > 本地开发时 Auth 自动放行（未配置环境变量时不触发鉴权）。
 
+### 调试（VSCode）
+
+项目已配置 `.vscode/launch.json` + `.vscode/tasks.json`，按 `F5` 即可一键启动：
+
+1. 自动运行 `npm run dev` 启动 Vite 开发服务器（后台任务）
+2. 服务器就绪后自动打开 Chrome 并连接 `http://localhost:5173`
+3. 可直接在 `src/` 下的 `.tsx` / `.ts` 源码中打断点调试
+
+> 如果不需要断点调试，也可以手动 `npm run dev` 后在任意浏览器访问 `http://localhost:5173`。
+
 ## 部署
 
 > EdgeOne Pages 部署需要自购域名并完成 ICP 备案，流程较繁琐且存在域名成本，故不再推荐。推荐使用 Vercel 部署，免费额度充足。
